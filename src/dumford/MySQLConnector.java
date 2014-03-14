@@ -1,3 +1,5 @@
+package dumford;
+
 import java.sql.*;
 
 public class MySQLConnector{
@@ -34,4 +36,4 @@ public class MySQLConnector{
 		st.executeUpdate("DROP TABLE employee");
 		st.executeUpdate("DROP TABLE worksfor");
 	}
-}
+} 

@@ -4,8 +4,8 @@
 	<property name="build.dir"		value="build" />
 	<property name="classes.dir" 	value="${build.dir}/classes" />
 	<property name="lib.dir"		value="lib" />
-	<property name="jar.dir"		value="${build.dir}" />
-	<property name="main.class"		value="EmployeeManager" />
+	<property name="jar.dir"		value="." />
+	<property name="main.class"		value="dumford.EmployeeManager" />
 	<property name="jar.name"		value="${jar.dir}/${ant.project.name}.jar" />
 
 	<path id="classpath">
@@ -15,6 +15,7 @@
 
 	<target name="clean">
 		<delete dir="${build.dir}" />
+		<delete file="${jar.name}" />
 	</target>
 
 	<target name="build">

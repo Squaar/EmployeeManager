@@ -1,3 +1,6 @@
+//Matt Dumford
+//mdumfo2@uic.edu
+
 package dumford;
 
 import java.sql.SQLException;

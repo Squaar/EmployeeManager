@@ -1,3 +1,6 @@
+//Matt Dumford
+//mdumfo2@uic.edu
+
 package dumford;
 
 import java.util.Scanner;
@@ -5,13 +8,13 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-//import MySQLConnector;
-
 public class EmployeeManager{
 
 	private static MySQLConnector conn;
 
 	public static void main(String args[]){
+		
+		System.out.println("Matt Dumford - mdumfo2@uic.edu\n");
 
 		if(args.length < 3){
 			System.err.println("Not enough arguments. \n\tArgs: database user password");
@@ -24,10 +27,12 @@ public class EmployeeManager{
 
 		
 		try{
+			//set up connection and create tables
 			conn = new MySQLConnector("localhost", 3306, db, user, pass);
 			conn.createTables();
 			Scanner sc = new Scanner(new File("transfile"));
 
+			//loop through lines in file and parse each line
 			while(sc.hasNextLine()){
 				String line = sc.nextLine().trim();
 				handleLine(line);				
@@ -43,6 +48,7 @@ public class EmployeeManager{
 		}
 	}
 
+	//checks each line for validity and calls specific commands' methods
 	private static void handleLine(String line){
 		if(!line.matches("[1-6]{1}.*"))
 			System.err.println("Error parsing line: " + line);

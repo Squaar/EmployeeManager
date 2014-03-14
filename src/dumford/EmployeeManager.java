@@ -3,6 +3,7 @@ package dumford;
 import java.util.Scanner;
 import java.io.File;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 //import MySQLConnector;
 
@@ -87,7 +88,7 @@ public class EmployeeManager{
 
 				System.out.println("Done.");
 			}else
-				System.out.println("Error, employee does not exist.");
+				System.out.println("Error, employee " + line[1] + " does not exist.");
 		}catch(SQLException e){
 			System.err.println("Error deleting employee.");
 			e.printStackTrace();
@@ -119,7 +120,7 @@ public class EmployeeManager{
 				System.out.println("Done.");
 			}
 			else
-				System.out.println("Error, employee already exists.");
+				System.out.println("Error, employee " + line[1] + " already exists.");
 		}catch(SQLException e){
 			System.err.println("Error creating employee.");
 			e.printStackTrace();
@@ -145,11 +146,55 @@ public class EmployeeManager{
 
 	//get names of employees that work under a manager recursively
 	private static void handle4(String line[]){
-		
+		if(line.length < 2){
+			System.out.println("Error, not enough arguments to check for employees.");
+			return;
+		}
+		try{
+			System.out.print("Employees that work under " + line[1] + ": ");
+			ArrayList<String> employees = new ArrayList<String>();
+
+			do4(line[1], employees);
+
+			if(employees.size() > 0){
+				for(int i=0; i<employees.size(); i++){
+					System.out.print(employees.get(i));
+					if(i != employees.size()-1)
+						System.out.print(", ");
+				}
+				System.out.println();
+			}
+			else{
+				System.out.println("There are no employees that work under" + line[1] + ".");
+			}
+		}catch(SQLException e){
+			System.err.println("Error getting workers.");
+			e.printStackTrace();
+		}
+	}
+
+	//recursive helper method for handle4()
+	private static ArrayList<String> do4(String eid, ArrayList<String> ans) throws SQLException{
+		String query = 	"SELECT eid, name " + 
+						"FROM employee NATURAL JOIN worksfor " + 
+						"WHERE worksfor.mid=" + eid;
+		String result[][] = conn.query(query);
+		for(String[] s : result){
+			if(!ans.contains(s[1]))
+				ans.add(s[1]);
+		}
+		for(String[] s : result){
+			do4(s[0], ans);
+		}
+		return ans;
 	}
 
 	//get average salaries of employees that work under a manager
 	private static void handle5(String line[]){
+		if(line.length < 2){
+			System.out.println("Error, not enough arguments to get average salary.");
+			return;
+		}
 		String query = 	"SELECT AVG(employee.salary) " + 
 						"FROM employee NATURAL JOIN worksfor " +
 						"WHERE worksfor.mid=" + line[1];
@@ -157,7 +202,7 @@ public class EmployeeManager{
 			String avgSalary = conn.query(query)[0][0];
 
 			if(avgSalary == null)
-				System.out.println("Error, that manager has no employees.");
+				System.out.println("Error, " + line[1] + " has no employees.");
 			else
 				System.out.println("Average Salary of " + line[1] + "'s employees: " + avgSalary);
 		}catch(SQLException e){

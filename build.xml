@@ -1,4 +1,4 @@
-<project name="CS480HW4" basedir="." default="main">
+<project name="mdumfo2_CS480HW4" basedir="." default="main">
 
 	<property name="src.dir" 		value="src" />
 	<property name="build.dir"		value="build" />
@@ -41,6 +41,6 @@
 		</java>
 	</target>
 
-	<target name="main" depends="clean, run" />
+	<target name="main" depends="clean, jar" />
 
 </project>

@@ -1,6 +1,11 @@
 package dumford;
 
-import java.sql.*;
+import java.sql.SQLException;
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.ResultSet;
+import java.sql.DriverManager;
+import java.util.ArrayList;
 
 public class MySQLConnector{
 
@@ -35,5 +40,29 @@ public class MySQLConnector{
 		Statement st = connection.createStatement();
 		st.executeUpdate("DROP TABLE employee");
 		st.executeUpdate("DROP TABLE worksfor");
+	}
+
+	public String[][] executeQuery(String query) throws SQLException{
+		Statement st = connection.createStatement();
+		ResultSet rs = st.executeQuery(query);
+
+		int numCols = rs.getMetaData().getColumnCount();
+
+		ArrayList<String[]> data = new ArrayList<String[]>();
+
+		while(rs.next()){
+			String[] row = new String[numCols];
+			
+			for(int i=1; i<numCols; i++){
+				row[i] = rs.getString(i); //col index starts at 1, not 0
+			}
+			
+			data.add(row);
+		}
+
+		rs.close();
+		st.close();
+
+		return data.toArray(new String[0][0]);
 	}
 } 

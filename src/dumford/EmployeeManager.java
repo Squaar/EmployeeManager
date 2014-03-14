@@ -2,6 +2,7 @@ package dumford;
 
 import java.util.Scanner;
 import java.io.File;
+import java.sql.SQLException;
 
 //import MySQLConnector;
 
@@ -60,27 +61,44 @@ public class EmployeeManager{
 		}
 	}
 
+	//delete employee
 	private static void handle1(String line[]){
-
+		
 	}
 
+	//insert new employee
 	private static void handle2(String line[]){
-
+		
 	}
 
+	//get average salary
 	private static void handle3(String line[]){
-
+		String query = 	"SELECT AVG(salary) " +
+						"FROM employee";
+		try{
+			String avgSalary = conn.executeQuery(query)[0][0];
+			if(avgSalary == null)
+				System.out.println("No employees to get the average salary of!");
+			else
+				System.out.println("Average Salary: " + avgSalary);
+		}catch(SQLException e){
+			System.err.println("Error getting average salary.");
+			e.printStackTrace();
+		}
 	}
 
+	//get names of employees that work under a manager recursively
 	private static void handle4(String line[]){
-
+		
 	}
 
+	//get average salaries of employees that work under a manager
 	private static void handle5(String line[]){
-
+		
 	}
 
+	//get employees with more than one manager
 	private static void handle6(String line[]){
-
+		
 	}
 }

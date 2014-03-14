@@ -150,7 +150,17 @@ public class EmployeeManager{
 
 	//get average salaries of employees that work under a manager
 	private static void handle5(String line[]){
-		
+		String query = 	"SELECT AVG(employee.salary) " + 
+						"FROM employee NATURAL JOIN worksfor " +
+						"WHERE worksfor.mid=" + line[1];
+		try{
+			String avgSalary = conn.query(query)[0][0];
+
+			if(avgSalary == null)
+				System.out.println("Error, that manager has no employees.");
+			else
+				System.out.println("Average Salary of " + line[1] + "'s employees: " + avgSalary);
+		}catch(SQLException e){e.printStackTrace();}
 	}
 
 	//get employees with more than one manager

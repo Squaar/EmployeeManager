@@ -12,6 +12,12 @@ public class EmployeeManager{
 
 	public static void main(String args[]){
 
+
+		//REMEMBER TO REMOVE THESE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// args[0] = "test";
+		// args[1] = "root";
+		// args[2] = "manonthemoon121";
+
 		if(args.length < 3){
 			System.err.println("Not enough arguments. \n\tArgs: database user password");
 			System.exit(1);
@@ -32,10 +38,14 @@ public class EmployeeManager{
 				handleLine(line);				
 			}
 
-			conn.dropTables();
-			conn.close();
-		}catch(Exception e){e.printStackTrace();}
-		System.out.println("Done.");
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			try{
+				conn.dropTables();
+				conn.close();
+			}catch(SQLException e){e.printStackTrace();}
+		}
 	}
 
 	private static void handleLine(String line){
@@ -68,7 +78,34 @@ public class EmployeeManager{
 
 	//insert new employee
 	private static void handle2(String line[]){
+		if(line.length < 5){
+			System.out.println("Error, not enough arguments to create employee.");
+			return;
+		}
+
+		String query = 	"SELECT * " +
+						"FROM employee " +
+						"WHERE eid='" + line[1] + "'";
 		
+		try{
+			if(conn.query(query).length == 0){
+				String insert = "INSERT INTO employee (eid, name, salary)" + 
+								"VALUES (" + line[1] + ", '" + line[2] + "', " + line[3] + ")";
+				conn.update(insert);
+
+				for(int i=4; i<line.length; i++){
+					insert = 	"INSERT INTO worksfor (eid, mid) " + 
+								"VALUES (" + line[1] + ", " + line[i] + ")";
+					conn.update(insert);
+				}
+				System.out.println("Done.");
+			}
+			else
+				System.out.println("Error, employee already exists.");
+		}catch(SQLException e){
+			System.err.println("Error creating employee.");
+			e.printStackTrace();
+		}
 	}
 
 	//get average salary
@@ -76,9 +113,10 @@ public class EmployeeManager{
 		String query = 	"SELECT AVG(salary) " +
 						"FROM employee";
 		try{
-			String avgSalary = conn.executeQuery(query)[0][0];
+			String avgSalary = conn.query(query)[0][0];
+
 			if(avgSalary == null)
-				System.out.println("No employees to get the average salary of!");
+				System.out.println("Error, no employees to get the average salary of.");
 			else
 				System.out.println("Average Salary: " + avgSalary);
 		}catch(SQLException e){

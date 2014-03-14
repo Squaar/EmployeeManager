@@ -160,11 +160,35 @@ public class EmployeeManager{
 				System.out.println("Error, that manager has no employees.");
 			else
 				System.out.println("Average Salary of " + line[1] + "'s employees: " + avgSalary);
-		}catch(SQLException e){e.printStackTrace();}
+		}catch(SQLException e){
+			System.err.println("Error getting average salaries.");
+			e.printStackTrace();
+		}
 	}
 
 	//get employees with more than one manager
 	private static void handle6(String line[]){
-		
+		String query = 	"SELECT name " + 
+						"FROM employee NATURAL JOIN worksfor " +
+						"GROUP BY eid " + 
+						"HAVING (COUNT(DISTINCT mid)) > 1";
+		try{ 
+			String names[][] = conn.query(query);
+
+			if(names.length > 0){
+				System.out.print("Employees with more than one manager: ");
+				for(int i=0; i<names.length; i++){
+					System.out.print(names[i][0]);
+					if(i != names.length-1)
+						System.out.print(", ");
+				}
+				System.out.println();
+			}	
+			else
+				System.out.println("There are no employees with more than one manager.");
+		}catch(SQLException e){
+			System.err.println("Error getting employees with more than one manager.");
+			e.printStackTrace();
+		}
 	}
 }

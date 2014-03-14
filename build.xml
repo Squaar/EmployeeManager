@@ -9,7 +9,7 @@
 	<property name="jar.name"		value="${jar.dir}/${ant.project.name}.jar" />
 
 	<path id="classpath">
-		<fileset dir="${lib.dir}" includes="**/*.jar" />
+		<fileset dir="${lib.dir}" />
 	</path>
 
 
@@ -25,6 +25,7 @@
 
 	<target name="jar" depends="build">
 		<jar destfile="${jar.name}" basedir="${classes.dir}">
+			<zipgroupfileset dir="${lib.dir}" includes="*.jar" />
 			<manifest>
 				<attribute name="Main-Class" value="${main.class}" />
 			</manifest>

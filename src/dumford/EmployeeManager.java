@@ -12,12 +12,6 @@ public class EmployeeManager{
 
 	public static void main(String args[]){
 
-
-		//REMEMBER TO REMOVE THESE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		// args[0] = "test";
-		// args[1] = "root";
-		// args[2] = "manonthemoon121";
-
 		if(args.length < 3){
 			System.err.println("Not enough arguments. \n\tArgs: database user password");
 			System.exit(1);
@@ -73,19 +67,43 @@ public class EmployeeManager{
 
 	//delete employee
 	private static void handle1(String line[]){
-		
-	}
-
-	//insert new employee
-	private static void handle2(String line[]){
-		if(line.length < 5){
+		if(line.length < 2){
 			System.out.println("Error, not enough arguments to create employee.");
 			return;
 		}
 
 		String query = 	"SELECT * " +
 						"FROM employee " +
-						"WHERE eid='" + line[1] + "'";
+						"WHERE eid=" + line[1];
+		try{
+			if(conn.query(query).length != 0){
+				String delete = "DELETE FROM employee " + 
+								"WHERE eid=" + line[1];
+				conn.update(delete);
+
+				delete = 	"DELETE FROM worksfor " + 
+							"WHERE eid=" + line[1] + " OR mid=" + line[1];
+				conn.update(delete);
+
+				System.out.println("Done.");
+			}else
+				System.out.println("Error, employee does not exist.");
+		}catch(SQLException e){
+			System.err.println("Error deleting employee.");
+			e.printStackTrace();
+		}
+	}
+
+	//insert new employee
+	private static void handle2(String line[]){
+		if(line.length < 4){
+			System.out.println("Error, not enough arguments to create employee.");
+			return;
+		}
+
+		String query = 	"SELECT * " +
+						"FROM employee " +
+						"WHERE eid=" + line[1];
 		
 		try{
 			if(conn.query(query).length == 0){
